@@ -5,6 +5,11 @@
 *.suo
 *.sln.DotSettings.user
 
+# --- Java Artifacts ---
+*.class
+target/
+
+
 # --- Python & Virtual Environments ---
 .venv/
 __pycache__/
