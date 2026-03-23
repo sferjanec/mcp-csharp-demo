@@ -5,6 +5,14 @@
 *.suo
 *.sln.DotSettings.user
 
+# --- Java Artifacts ---
+*.class
+target/
+
+# --- VSCode ---
+.vscode/
+
+
 # --- Python & Virtual Environments ---
 .venv/
 __pycache__/
