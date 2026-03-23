@@ -8,6 +8,7 @@
 # --- Java Artifacts ---
 *.class
 target/
+cp.txt
 
 # --- VSCode ---
 .vscode/
