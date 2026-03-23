@@ -1,0 +1,21 @@
+# --- .NET Artifacts ---
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.sln.DotSettings.user
+
+# --- Python & Virtual Environments ---
+.venv/
+__pycache__/
+*.pyc
+.env
+.pytest_cache/
+
+# --- Database & Docker ---
+pgdata/
+.docker/
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "TestMcpServer": {
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "./TestMcpServer.csproj"
+      ]
+    }
+  }
+}
