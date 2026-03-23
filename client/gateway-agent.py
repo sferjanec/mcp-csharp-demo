@@ -6,15 +6,22 @@ import os
 from dotenv import load_dotenv
 import sys
 
+# 1. Define the paths first
+# This gets the directory where gateway-agent.py lives (the /client folder)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# This gets the root project folder (mcp-csharp-demo)
+PARENT_DIR = os.path.dirname(BASE_DIR)
+
 SERVERS = {
     "dotnet": {
         "command": "dotnet",
-        "args": ["run", "--project", "../TestMcpServer/TestMcpServer.csproj"]
+        "args": ["run", "--project", 
+                 os.path.join(PARENT_DIR, "TestMcpServer.csproj")]
     },
     "spring": {
         "command": "mvnw",
         "args": ["spring-boot:run"],
-        "cwd": os.path.join([PARENT_DIR], "../SpringMcpServer")
+        "cwd": os.path.join(PARENT_DIR, "SpringMcpServer")
     }
 }
 
@@ -45,9 +52,10 @@ async def run_gateway():
 
     #3. Initialize Gemini
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash", 
+        model="gemini-2.5-flash-lite", 
         project=PROJECT_ID,
-        location=LOCATION
+        location=LOCATION,
+        vertexai=True
     )
 
     #4. Create the agent
