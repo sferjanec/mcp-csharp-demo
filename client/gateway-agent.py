@@ -2,8 +2,26 @@ import asyncio
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_agent
-import os 
+import os
 from dotenv import load_dotenv
+import sys
+
+SERVERS = {
+    "dotnet": {
+        "command": "dotnet",
+        "args": ["run", "--project", "../TestMcpServer/TestMcpServer.csproj"]
+    },
+    "spring": {
+        "command": "mvnw",
+        "args": ["spring-boot:run"],
+        "cwd": os.path.join([PARENT_DIR], "../SpringMcpServer")
+    }
+}
+
+target = sys.argv[1] if len(sys.argv) > 1 else "dotnet"
+config = SERVERS.get(target, SERVERS["dotnet"])
+
+print(f"--- Starting MCP Gateway using {target.upper()} backend ---")
 
 load_dotenv()
 
@@ -15,8 +33,8 @@ async def run_gateway():
     #1. set up the MultiServerMCPClient
     client = MultiServerMCPClient({
         "HelloServer": {
-            "command": "dotnet",
-          "args": ["../bin/Debug/net10.0/TestMcpServer.dll"], # Relative to the 'client' folder
+            "command": config["command"],
+          "args": config["args"],
           "transport": "stdio"    
         }
     })
