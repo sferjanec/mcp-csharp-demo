@@ -2,9 +2,14 @@ import asyncio
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_agent
+import os 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Use your specific Project ID
-PROJECT_ID = "gen-lang-client-0116604984"
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
+LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION")
 
 async def run_gateway():
     #1. set up the MultiServerMCPClient
@@ -24,7 +29,7 @@ async def run_gateway():
     llm = ChatGoogleGenerativeAI(
         model="gemini-1.5-flash", 
         project=PROJECT_ID,
-        location="us-central1"
+        location=LOCATION
     )
 
     #4. Create the agent
