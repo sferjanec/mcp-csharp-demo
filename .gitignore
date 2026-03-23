@@ -9,6 +9,9 @@
 *.class
 target/
 
+# --- VSCode ---
+.vscode/
+
 
 # --- Python & Virtual Environments ---
 .venv/
