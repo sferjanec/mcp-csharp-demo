@@ -19,9 +19,17 @@ SERVERS = {
                  os.path.join(PARENT_DIR, "TestMcpServer.csproj")]
     },
     "spring": {
-        "command": "mvnw",
-        "args": ["spring-boot:run"],
-        "cwd": os.path.join(PARENT_DIR, "SpringMcpServer")
+        "command": os.path.join(PARENT_DIR, "SpringMcpServer", "mvnw"),
+        "args": ["-q",
+            "spring-boot:run",
+            "-Dspring.main.banner-mode=off",
+            "-Dlogging.pattern.console=",
+            "-Dspring.main.web-application-type=none",
+            "-Dlogging.level.org.springframework.ai=OFF",
+            "> spring-mcp-startup.log 2>&1"
+        ],
+        "cwd": os.path.join(PARENT_DIR, "SpringMcpServer"),
+        "shell": True
     }
 }
 
@@ -39,13 +47,12 @@ LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION")
 async def run_gateway():
     #1. set up the MultiServerMCPClient
     client = MultiServerMCPClient({
-        "HelloServer": {
-            "command": config["command"],
-          "args": config["args"],
-          "transport": "stdio"    
+        "server": {
+            "transport": "sse",
+            "url": "http://localhost:8080/sse"
         }
     })
-
+    
     #2. Load the tools from the C# server
     mcp_tools = await client.get_tools()
     print(f"Discovered tools: {[t.name for t in mcp_tools]}")

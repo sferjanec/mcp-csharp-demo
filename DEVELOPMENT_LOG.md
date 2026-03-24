@@ -48,3 +48,28 @@
 **Analysis:** Evaluated pricing delta between Google AI Studio and Vertex AI. 
 **Finding:** Token costs remain identical ($0.10/$0.40 per 1M), but Vertex AI provides the required IAM security and SLA for the FEMA response use case.
 **Strategy:** Leveraged the $300 GCP Cloud Credit to offset enterprise management fees while utilizing the Flash-Lite model tier for 80% cost reduction compared to Pro models.
+
+### 2026-03-23: Build Lifecycle Standardization
+**Issue:** `FileNotFoundError` in the Python Gateway due to a missing Maven Wrapper (`mvnw`) in the Spring project.
+**Resolution:** Initialized the Maven Wrapper using `mvn wrapper:wrapper` and applied `chmod +x` permissions.
+**Benefit:** Decoupled the project's build execution from the local system's Maven installation, ensuring consistent behavior across different environments (CI/CD, local WSL, etc.).
+
+### 2026-03-23: Spring AI Version Compatibility & Nullness Bug
+**Issue:** Encountered `java.lang.NoClassDefFoundError: org.springframework.core.Nullness` on startup when evaluating `FunctionToolCallback` bean creation.
+**Root Cause:** A version incompatibility between Spring Boot `3.4.2` (which uses Spring Core 6.2.2) and the milestone release of Spring AI `2.0.0-M3`. The `2.0.0-M3` milestone release references `org.springframework.core.Nullness` inside its JSON schema generator, which was not resolved successfully with this specific version of Spring Core in the classpath.
+**Resolution:** Downgraded `spring-ai.version` in `pom.xml` from `2.0.0-M3` to `1.1.3`. 
+**Benefit:** Restored stable application context startup while preserving necessary MCP Server initialization capabilities.
+
+### 2026-03-23: MCP Python Gateway SDK Update & SSE Transport Pivot
+**Issue:** Execution of Python client threw a `NotImplementedError` indicating `MultiServerMCPClient` could no longer be used as an asynchronous context manager, and `stdio` logs were corrupting JSON-RPC parsing.
+**Root Cause:** Langchain MCP Adapters package updated structural patterns in v0.1.0 causing backwards incompatibility. Additionally, standard output configurations in Spring Boot created payload conflicts with local stdout-based MCP protocol handling.
+**Resolution:** Explicitly configured Spring AI to run using `webmvc` dependencies for HTTP/SSE paths instead of native `stdio`. Replaced asynchronous `with` instantiations in the Python scripting dictionary-backed client parameters.
+**Benefit:** Stabilized inter-process communication resolving console logging conflicts and modernized LangGraph codebase structure to match current library standards.
+
+### 2026-03-23: Successful SSE Migration & SDK Alignment
+**Status:** SUCCESS
+**Issue:** `NotImplementedError` in `langchain-mcp-adapters v0.1.0` and stdio stream corruption.
+**Resolution:** * Migrated Spring Boot backend to `spring-ai-starter-mcp-server-webmvc`.
+* Refactored Python Gateway to use the new dictionary-based instantiation for `MultiServerMCPClient`.
+* Successfully decoupled JSON-RPC traffic from Spring/Maven console logs using HTTP/SSE.
+**Result:** End-to-end handshake verified. Gemini 2.5 Flash-Lite successfully invoked the Spring-hosted `get_greeting` tool.
